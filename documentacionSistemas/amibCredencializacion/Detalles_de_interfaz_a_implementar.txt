@@ -1,0 +1,45 @@
+Implementar siguiendo la siguiente interface:
+
+interface IImpresoraCredenciales
+
+	EstatusImpresoraCredenciales ObtenerEstatus()
+	
+	void Iniciar() //Iniciaría conexión con impresora <- En caso de manejarse (como si fuera un socket), si no, solo es para que no acepte llamadas a Imprimir,Reintentar,Abortar....
+	void Detener() //Detiene conexión con impresora <- En caso de manejarse (como si fuera un socket), si no, solo es para que no acepte llamadas a Imprimir,Reintentar,Abortar....
+	
+	void Imprimir(Bitmap frente, Bitmap atras) //Realizar de forma asincrona 
+											   //(no esperar a que responda la impresora, 
+											   //la respuesta iría al llamar a un evento 
+											   //correpondiente como: "ImpresionSatisfactoria".. 
+	void Reintentar() //Realizar de forma asincrona 
+	void Abortar() //Realizar de forma asincrona 
+	
+	event NotificacionLanzada Iniciada
+	event NotificacionLanzada Detenida
+	
+	event NotificacionLanzada ImpresionSatisfactoria
+	event NotificacionLanzada ImpresoraLista
+	event ErrorLanzado Error
+	event NotificacionLanzada Cancelado
+	event NotificacionLanzada Abortado
+	
+
+
++teniendo estos elementos declarados en el mismo namespace:
+	
+delegate void NotificacionLanzada()
+delegate void ErrorLanzado(ErrorImpresoraCredenciales error)
+	
+enum EstatusImpresoraCredenciales
+	NoIniciada
+	Lista
+	Imprimiendo
+	Cancelado
+	Error
+	
+enum ErrorImpresoraCredenciales
+	ErrorAtasco
+	ErrorFaltaInsumoPlastico
+	ErrorFaltaInsumoTinta
+	*se irian agregando mas estatus de ser necesario
+	
