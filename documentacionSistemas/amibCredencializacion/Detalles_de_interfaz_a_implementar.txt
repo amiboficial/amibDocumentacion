@@ -1,45 +1,48 @@
 Implementar siguiendo la siguiente interface:
-
-interface IImpresoraCredenciales
-
-	EstatusImpresoraCredenciales ObtenerEstatus()
+t002_d_loggedtrabajo
+public interface IImpresoraCredenciales
+	StatusImpresoraCredenciales ObtenerStatusImpresora(ref int codigoError)
+	StatusImpresion ObtenerStatusImpresion(ref int codigoError)
+	boolean ChecarListoParaImpresion();
+	int Imprimir(byte[] frente, byte[] atras); <- es conveniente que cuando pruebes este metodo, lo pruebes de forma asincrona, con un Task.Run( x => IImpresoraCredenciales.Imprimir(); );
+	void Abortar(int actionId); <- este otro método tambien conviene hacerlo asincrono;
 	
-	void Iniciar() //Iniciaría conexión con impresora <- En caso de manejarse (como si fuera un socket), si no, solo es para que no acepte llamadas a Imprimir,Reintentar,Abortar....
-	void Detener() //Detiene conexión con impresora <- En caso de manejarse (como si fuera un socket), si no, solo es para que no acepte llamadas a Imprimir,Reintentar,Abortar....
+enum StatusImpresoraCredenciales
+	Initializing
+	Idle
+	XferRollersHeating
+	Standby
+	Printing
+	PrintingHeating
+	AlarmHandling
+	Offline
+	Canceling
+	TempOutOfRange
+	MagOps
+	ContactOps
+	ContactlessOps
+	ConfigData
+	JobData
+	DiagnosticMode
+	XferRollersCooling
+	PrintingCooling
+	InsertCard
 	
-	void Imprimir(Bitmap frente, Bitmap atras) //Realizar de forma asincrona 
-											   //(no esperar a que responda la impresora, 
-											   //la respuesta iría al llamar a un evento 
-											   //correpondiente como: "ImpresionSatisfactoria".. 
-	void Reintentar() //Realizar de forma asincrona 
-	void Abortar() //Realizar de forma asincrona 
+enum StatusImpresion
+	Initializing
+	Receiving
+	ReceiveOk
+	ReceiveError
+	ReceiveOnline
+	Parsed
+	InProgress
+	DoneOk
+	DoneError
+	CancelledByUser
+	CancelledByError
+	CleaningUp
 	
-	event NotificacionLanzada Iniciada
-	event NotificacionLanzada Detenida
-	
-	event NotificacionLanzada ImpresionSatisfactoria
-	event NotificacionLanzada ImpresoraLista
-	event ErrorLanzado Error
-	event NotificacionLanzada Cancelado
-	event NotificacionLanzada Abortado
-	
-
-
-+teniendo estos elementos declarados en el mismo namespace:
-	
-delegate void NotificacionLanzada()
-delegate void ErrorLanzado(ErrorImpresoraCredenciales error)
-	
-enum EstatusImpresoraCredenciales
-	NoIniciada
-	Lista
-	Imprimiendo
-	Cancelado
-	Error
-	
-enum ErrorImpresoraCredenciales
-	ErrorAtasco
-	ErrorFaltaInsumoPlastico
-	ErrorFaltaInsumoTinta
-	*se irian agregando mas estatus de ser necesario
-	
+class ErrorImpresora
+	int Codigo;
+	string Tipo;
+	string Descripcion;
